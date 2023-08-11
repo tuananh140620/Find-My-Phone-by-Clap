@@ -201,7 +201,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         int id = view.getId();
         if (id == R.id.btn_start_service) {
             check();
-        } else if (id == R.id.stop) {
+        } else if (id == R.id.btn_stop) {
             stopService(new Intent(this, VocalService.class));
             txtStart.setVisibility(View.INVISIBLE);
             stopLinear.setVisibility(View.INVISIBLE);
