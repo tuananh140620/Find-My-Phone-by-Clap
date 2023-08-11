@@ -7,10 +7,7 @@ public class RecorderThread extends Thread {
     private final int audioEncoding = 2;
     @SuppressLint("MissingPermission")
     private final AudioRecord audioRecord = new AudioRecord(1, this.sampleRate, this.channelConfiguration, this.audioEncoding, AudioRecord.getMinBufferSize(this.sampleRate, this.channelConfiguration, this.audioEncoding));
-    byte[] buffer = new byte[this.frameByteSize];
     private final int channelConfiguration = 16;
-    private final int frameByteSize = 2048;
-    private boolean isRecording;
     private int rateSupported;
     private boolean rate_send;
     private final int sampleRate = getValidSampleRates();
@@ -28,7 +25,6 @@ public class RecorderThread extends Thread {
     public void startRecording() {
         try {
             audioRecord.startRecording();
-            isRecording = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -38,7 +34,6 @@ public class RecorderThread extends Thread {
         try {
             audioRecord.stop();
             audioRecord.release();
-            isRecording = false;
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -51,7 +51,7 @@ public class DetectClapClap implements OnsetHandler {
 
     public void handleOnset(double d, double d2) {
         clap++;
-        int nb_claps = 3;
+        int nb_claps = 2;
         if (clap >= nb_claps) {
             classesApp.save("detectClap", "1");
             mIsRecording = false;

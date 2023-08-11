@@ -20,7 +20,6 @@ import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,7 +33,6 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
     private boolean isFlashOn;
     private Context mCtx;
     SurfaceHolder mHolder;
-    private RelativeLayout mProgressBar;
     private CountDownTimer mTimer = null;
     private ImageView home;
     private ImageView stop;
@@ -43,6 +41,9 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
     private boolean run;
     private TextView trendsetting;
     private Vibrator v;
+
+    public ActivityVocalSignal() {
+    }
 
     public void onPointerCaptureChanged(boolean z) {
     }
@@ -87,7 +88,6 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
 
     private void runVibrate(boolean z) {
         this.run = z;
-        Context context = this.mCtx;
         this.v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         new Thread(new Runnable() {
             public void run() {
