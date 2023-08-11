@@ -27,7 +27,6 @@ import androidx.core.content.ContextCompat;
 public class MainActivity extends Activity implements View.OnClickListener {
     private ImageView btnStart;
     private CheckBox checkBoxSound;
-    private ImageView stopLinear;
     private CheckBox checkBoxVibrate;
     private ImageView buttonStop;
     private ClassesApp classesApp;
@@ -35,7 +34,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public Boolean mPermCAm;
     private SeekBar seekBar;
     private LinearLayout txtStart;
-    private ImageView vocalButton;
     private CheckBox checkBoxFlash;
     public static boolean MainIsRun;
     @SuppressLint("StaticFieldLeak")
@@ -48,22 +46,19 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_main);
-        stopLinear = findViewById(R.id.btn_start_service);
         btnStart = findViewById(R.id.btn_start_service);
         txtStart = findViewById(R.id.txt_feild);
-        ImageView stopLinear = findViewById(R.id.btn_start_service);
         checkBoxFlash = findViewById(R.id.flashbox);
         checkBoxVibrate = findViewById(R.id.vibratebox);
         checkBoxSound = findViewById(R.id.soundbox);
         seekBar = findViewById(R.id.seekbar);
-        vocalButton = findViewById(R.id.btn_start_service);
         buttonStop = findViewById(R.id.btn_stop);
 
         isMyServiceRunning();
 
         if (isMyServiceRunning()) {
             txtStart.setVisibility(View.VISIBLE);
-            stopLinear.setVisibility(View.VISIBLE);
+            btnStart.setVisibility(View.VISIBLE);
         }
         checkBoxFlash.setChecked(false);
         checkBoxVibrate.setChecked(false);
@@ -193,7 +188,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void initialization() {
-        vocalButton.setOnClickListener(this);
+        btnStart.setOnClickListener(this);
         buttonStop.setOnClickListener(this);
     }
 
@@ -204,7 +199,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         } else if (id == R.id.btn_stop) {
             stopService(new Intent(this, VocalService.class));
             txtStart.setVisibility(View.INVISIBLE);
-            stopLinear.setVisibility(View.INVISIBLE);
+            btnStart.setVisibility(View.INVISIBLE);
             btnStart.setVisibility(View.VISIBLE);
             if (ActivityVocalSignal.mySong != null) {
                 ActivityVocalSignal.mySong.release();
@@ -258,7 +253,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
         if (this.btnStart.getVisibility() == View.VISIBLE) {
             this.btnStart.setVisibility(View.INVISIBLE);
-            stopLinear.setVisibility(View.VISIBLE);
+            btnStart.setVisibility(View.VISIBLE);
         }
         if (MainActivity.MainIsRun) {
             try {
