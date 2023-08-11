@@ -2,9 +2,7 @@ package com.example.ClapClapToFindPhone;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
@@ -14,7 +12,6 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
@@ -29,9 +26,8 @@ import java.io.IOException;
 public class ActivityVocalSignal extends Activity implements OnCompletionListener, Callback {
     public static MediaPlayer mySong;
     private Camera camera;
-    private boolean hasFlash;
+    private final boolean hasFlash;
     private boolean isFlashOn;
-    private Context mCtx;
     SurfaceHolder mHolder;
     private CountDownTimer mTimer = null;
     private ImageView home;
@@ -42,7 +38,8 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
     private TextView trendsetting;
     private Vibrator v;
 
-    public ActivityVocalSignal() {
+    public ActivityVocalSignal(boolean hasFlash) {
+        this.hasFlash = hasFlash;
     }
 
     public void onPointerCaptureChanged(boolean z) {
@@ -56,10 +53,10 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
         super.onCreate(bundle);
         setContentView(R.layout.activity_vocal_signal);
 
-        mCtx = this;
+        Context mCtx = this;
         boolean deviceHasCameraFlash = getPackageManager().hasSystemFeature("android.hardware.camera.flash");
         initialize();
-        ClassesApp classesApp = new ClassesApp(this.mCtx);
+        ClassesApp classesApp = new ClassesApp(mCtx);
         classesApp.save("StopService", "1");
         String flashbox = classesApp.read("flashbox", "1");
         String vibratebox = classesApp.read("vibratebox", "1");
@@ -89,18 +86,16 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
     private void runVibrate(boolean z) {
         this.run = z;
         this.v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        new Thread(new Runnable() {
-            public void run() {
-                while (ActivityVocalSignal.this.run) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        ActivityVocalSignal.this.v.vibrate(1000);
-                    } catch (Exception ignored) {
-                    }
+        new Thread(() -> {
+            while (ActivityVocalSignal.this.run) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    ActivityVocalSignal.this.v.vibrate(1000);
+                } catch (Exception ignored) {
                 }
             }
         }).start();
@@ -226,22 +221,6 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
             camera.release();
             this.camera = null;
         }
-    }
-
-    public void checkFlash() {
-        this.hasFlash = getApplicationContext().getPackageManager().hasSystemFeature("android.hardware.camera.flash");
-        if (this.hasFlash) {
-            Log.d("FFF", "c'è il flash");
-            return;
-        }
-        Builder builder = new Builder(this);
-        builder.setTitle("Errore!");
-        builder.setMessage("Il tuo telefono non ha il flash!");
-        builder.setPositiveButton("OK, compro un Nexus", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialogInterface, int i) {
-                ActivityVocalSignal.this.finish();
-            }
-        });
     }
 
     private void getCamera() {

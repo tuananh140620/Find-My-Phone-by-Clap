@@ -7,16 +7,13 @@ import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -242,7 +239,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 }
             }
         } else if (i == 223) {
-            if (iArr.length <= 0 || iArr[0] != 0) {
+            if (iArr.length == 0 || iArr[0] != 0) {
                 this.mPermCAm = Boolean.FALSE;
             } else {
                 this.mPermCAm = Boolean.TRUE;

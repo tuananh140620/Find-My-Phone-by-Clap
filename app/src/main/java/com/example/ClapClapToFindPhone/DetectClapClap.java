@@ -65,16 +65,14 @@ public class DetectClapClap implements OnsetHandler {
     public void listen() {
         recorder.startRecording();
         torsosFormat = new AudioFormat((float) SAMPLE_RATE, 16, 1, true, false);
-        new Thread(new Runnable() {
-            public void run() {
-                while (DetectClapClap.this.mIsRecording) {
-                    AudioEvent audioEvent = new AudioEvent(DetectClapClap.this.torsosFormat,
-                            DetectClapClap.this.recorder.read(DetectClapClap.this.buffer, 0, DetectClapClap.this.buffer.length));
-                    audioEvent.setFloatBufferWithByteBuffer(DetectClapClap.this.buffer);
-                    DetectClapClap.this.mPercussionOnsetDetector.process(audioEvent);
-                }
-                DetectClapClap.this.recorder.stop();
+        new Thread(() -> {
+            while (DetectClapClap.this.mIsRecording) {
+                AudioEvent audioEvent = new AudioEvent(DetectClapClap.this.torsosFormat,
+                        DetectClapClap.this.recorder.read(DetectClapClap.this.buffer, 0, DetectClapClap.this.buffer.length));
+                audioEvent.setFloatBufferWithByteBuffer(DetectClapClap.this.buffer);
+                DetectClapClap.this.mPercussionOnsetDetector.process(audioEvent);
             }
+            DetectClapClap.this.recorder.stop();
         }).start();
     }
 }
