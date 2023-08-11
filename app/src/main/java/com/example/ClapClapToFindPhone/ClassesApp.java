@@ -6,10 +6,9 @@ import android.preference.PreferenceManager;
 
 class ClassesApp {
 
-    private Context mContext;
+    private final Context mContext;
 
     public ClassesApp(Context context) {
-
         this.mContext = context;
 
     }
@@ -21,6 +20,6 @@ class ClassesApp {
     public void save(String str, String str2) {
         Editor edit = PreferenceManager.getDefaultSharedPreferences(this.mContext).edit();
         edit.putString(str, str2);
-        edit.commit();
+        edit.apply();
     }
 }

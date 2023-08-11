@@ -20,14 +20,14 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 
-public class MainActivity extends Activity implements View.OnClickListener{
-    public static Activity mainSetting;
+public class MainActivity extends Activity implements View.OnClickListener {
     private ImageView btnStart;
     private CheckBox checkBoxSound;
     private ImageView stopLinear;
@@ -41,24 +41,26 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private ImageView vocalButton;
     private CheckBox checkBoxFlash;
     public static boolean MainIsRun;
+    @SuppressLint("StaticFieldLeak")
     public static Activity activityMain;
 
     public MainActivity() {
     }
+
     @SuppressLint({"WrongConstant", "CutPasteId", "MissingInflatedId"})
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_main);
-        stopLinear = (ImageView) findViewById(R.id.btn_start_service);
-        btnStart = (ImageView) findViewById(R.id.btn_start_service);
-        txtStart = (LinearLayout) findViewById(R.id.txt_feild);
-        ImageView stopLinear = (ImageView) findViewById(R.id.btn_start_service);
-        checkBoxFlash = (CheckBox) findViewById(R.id.flashbox);
-        checkBoxVibrate = (CheckBox) findViewById(R.id.vibratebox);
-        checkBoxSound = (CheckBox) findViewById(R.id.soundbox);
-        seekBar = (SeekBar) findViewById(R.id.seekbar);
-        vocalButton = (ImageView) findViewById(R.id.btn_start_service);
-        buttonStop = (ImageView) findViewById(R.id.btn_stop);
+        stopLinear = findViewById(R.id.btn_start_service);
+        btnStart = findViewById(R.id.btn_start_service);
+        txtStart = findViewById(R.id.txt_feild);
+        ImageView stopLinear = findViewById(R.id.btn_start_service);
+        checkBoxFlash = findViewById(R.id.flashbox);
+        checkBoxVibrate = findViewById(R.id.vibratebox);
+        checkBoxSound = findViewById(R.id.soundbox);
+        seekBar = findViewById(R.id.seekbar);
+        vocalButton = findViewById(R.id.btn_start_service);
+        buttonStop = findViewById(R.id.btn_stop);
 
         isMyServiceRunning();
 
@@ -70,17 +72,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
         checkBoxVibrate.setChecked(false);
         checkBoxSound.setChecked(false);
         classesApp = new ClassesApp(this);
-
-//        final Window win = getWindow();
-//        win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-//        win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-//                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-//                | WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
-//        mCtx = this;
-//        boolean deviceHasCameraFlash = getPackageManager().hasSystemFeature("android.hardware.camera.flash");
-//        initialize();
-//        ClassesApp classesApp = new ClassesApp(mCtx);
-//        classesApp.save("StopService", "1");
 
         classesApp.read("seekBar", "50");
         String flashbox = classesApp.read("flashbox", "1");
@@ -107,30 +98,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
         checkCamFlash();
     }
 
-//    public void onCreate(Bundle bundle) {
-//        super.onCreate(bundle);
-//        setContentView(R.layout.activity_main);
-//
-//        activityMain = this;
-//
-//        MainIsRun = true;
-////        start = (ImageView) findViewById(R.id.setting);
-//        classesApp = new ClassesApp(this);
-//        isMyServiceRunning(VocalService.class);
-////        start.setOnClickListener(new OnClickListener() {
-////            public void onClick(View view) {
-////                    Intent intent = new Intent(MainActivity.this, ActivitySetting.class);
-////                    intent.setFlags(268435456);
-////                    MainActivity.this.startActivity(intent);
-////            }
-////        });
-//
-//    }
-private void initVolume() {
-    AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-    audioManager.getStreamVolume(3);
-    audioManager.setStreamVolume(3, (int) (((float) audioManager.getStreamMaxVolume(3)) * (Float.parseFloat(classesApp.read(NotificationCompat.CATEGORY_PROGRESS, "50")) / 100.0f)), 0);
-}
+    private void initVolume() {
+        AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        audioManager.getStreamVolume(3);
+        audioManager.setStreamVolume(3, (int) (((float) audioManager.getStreamMaxVolume(3)) * (Float.parseFloat(classesApp.read(NotificationCompat.CATEGORY_PROGRESS, "50")) / 100.0f)), 0);
+    }
+
     private void settingSound() {
         seekBar.setProgress(Integer.parseInt(classesApp.read("seekBar", "50")));
         initVolume();
@@ -144,10 +117,12 @@ private void initVolume() {
             }
         }.start();
     }
-private void setVolume(int i) {
-    AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-    audioManager.setStreamVolume(3, (int) (((float) audioManager.getStreamMaxVolume(3)) * (((float) i) / 100.0f)), 0);
-}
+
+    private void setVolume(int i) {
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setStreamVolume(3, (int) (((float) audioManager.getStreamMaxVolume(3)) * (((float) i) / 100.0f)), 0);
+    }
+
     private boolean isMyServiceRunning() {
         for (RunningServiceInfo runningServiceInfo : ((ActivityManager) getSystemService(ACTIVITY_SERVICE)).getRunningServices(Integer.MAX_VALUE)) {
             if (VocalService.class.getName().equals(runningServiceInfo.service.getClassName())) {
@@ -170,6 +145,7 @@ private void setVolume(int i) {
     public void onDestroy() {
         super.onDestroy();
     }
+
     private void seekBarValue() {
         this.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -179,24 +155,25 @@ private void setVolume(int i) {
             }
 
             public void onProgressChanged(SeekBar seekBar, int i, boolean z) {
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("");
-                stringBuilder.append(i);
-                MainActivity.this.classesApp.save("seekBar", stringBuilder.toString());
+                String stringBuilder = "" +
+                        i;
+                MainActivity.this.classesApp.save("seekBar", stringBuilder);
                 MainActivity.this.setvolume(i);
             }
         });
     }
+
     public void onBackPressed() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
     }
+
     private void checkbox() {
         if (!this.checkBoxFlash.isChecked()) {
             this.classesApp.save("flashbox", "0");
-        } else if (this.mPermCAm.booleanValue()) {
+        } else if (this.mPermCAm) {
             this.classesApp.save("flashbox", "1");
         } else {
             this.classesApp.save("flashbox", "0");
@@ -212,11 +189,6 @@ private void setVolume(int i) {
             this.classesApp.save("soundbox", "0");
         }
     }
-    private void initvolume() {
-        AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-        audioManager.getStreamVolume(3);
-        audioManager.setStreamVolume(3, (int) (((float) audioManager.getStreamMaxVolume(3)) * (Float.parseFloat(this.classesApp.read(NotificationCompat.CATEGORY_PROGRESS, "50")) / 100.0f)), 0);
-    }
 
     private void setvolume(int i) {
         AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -224,8 +196,8 @@ private void setVolume(int i) {
     }
 
     private void initialization() {
-        vocalButton.setOnClickListener((OnClickListener) this);
-        buttonStop.setOnClickListener((OnClickListener) this);
+        vocalButton.setOnClickListener(this);
+        buttonStop.setOnClickListener(this);
     }
 
     public void onClick(View view) {
@@ -243,12 +215,13 @@ private void setVolume(int i) {
             Toast.makeText(this, "Detection stopped", Toast.LENGTH_LONG).show();
         }
     }
+
     public void checkCamFlash() {
         if (ContextCompat.checkSelfPermission(this, "android.permission.CAMERA") != 0) {
             ActivityCompat.requestPermissions(this, new String[]{"android.permission.CAMERA"}, 223);
             return;
         }
-        this.mPermCAm = Boolean.valueOf(true);
+        this.mPermCAm = Boolean.TRUE;
     }
 
     public void check() {
@@ -260,7 +233,8 @@ private void setVolume(int i) {
             initializePlayerAndStartRecording();
         }
     }
-    public void onRequestPermissionsResult(int i, String[] strArr, int[] iArr) {
+
+    public void onRequestPermissionsResult(int i, @NonNull String[] strArr, @NonNull int[] iArr) {
         if (i == 123) {
             if (iArr.length > 0 && iArr[0] == 0) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -269,12 +243,13 @@ private void setVolume(int i) {
             }
         } else if (i == 223) {
             if (iArr.length <= 0 || iArr[0] != 0) {
-                this.mPermCAm = Boolean.valueOf(false);
+                this.mPermCAm = Boolean.FALSE;
             } else {
-                this.mPermCAm = Boolean.valueOf(true);
+                this.mPermCAm = Boolean.TRUE;
             }
         }
     }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initializePlayerAndStartRecording() {
         checkbox();
@@ -291,7 +266,7 @@ private void setVolume(int i) {
         if (MainActivity.MainIsRun) {
             try {
                 MainActivity.activityMain.finish();
-            } catch (Exception unused) {
+            } catch (Exception ignored) {
             }
         }
     }

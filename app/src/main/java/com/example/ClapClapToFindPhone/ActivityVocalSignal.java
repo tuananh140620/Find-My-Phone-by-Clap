@@ -1,5 +1,6 @@
 package com.example.ClapClapToFindPhone;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -18,40 +19,35 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import java.io.IOException;
 
 public class ActivityVocalSignal extends Activity implements OnCompletionListener, Callback {
     public static MediaPlayer mySong;
     private Camera camera;
-    private ClassesApp classesApp;
-    private boolean deviceHasCameraFlash;
-    private String flashbox;
     private boolean hasFlash;
     private boolean isFlashOn;
     private Context mCtx;
     SurfaceHolder mHolder;
-    private RelativeLayout mProgresseBar;
+    private RelativeLayout mProgressBar;
     private CountDownTimer mTimer = null;
-    private ImageView mhome;
-    MediaPlayer mp;
-    private ImageView mstop;
+    private ImageView home;
+    private ImageView stop;
     Parameters params;
     SurfaceView preview;
     private boolean run;
-    private String soundbox;
-    private TextView txtsettingtext;
+    private TextView trendsetting;
     private Vibrator v;
-    private String vibratebox;
 
     public void onPointerCaptureChanged(boolean z) {
     }
 
-    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i2, int i3) {
+    public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i2, int i3) {
     }
 
 
@@ -59,42 +55,37 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
         super.onCreate(bundle);
         setContentView(R.layout.activity_vocal_signal);
 
-        this.mProgresseBar = (RelativeLayout) findViewById(R.id.progressBar);
-        this.classesApp = new ClassesApp(this);
-        setProgresseBarInvisible();
-        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.adViewContainer);
-        this.mCtx = this;
-        this.deviceHasCameraFlash = getPackageManager().hasSystemFeature("android.hardware.camera.flash");
+        mCtx = this;
+        boolean deviceHasCameraFlash = getPackageManager().hasSystemFeature("android.hardware.camera.flash");
         initialize();
         ClassesApp classesApp = new ClassesApp(this.mCtx);
         classesApp.save("StopService", "1");
-        this.flashbox = classesApp.read("flashbox", "1");
-        this.vibratebox = classesApp.read("vibratebox", "1");
-        this.soundbox = classesApp.read("soundbox", "1");
+        String flashbox = classesApp.read("flashbox", "1");
+        String vibratebox = classesApp.read("vibratebox", "1");
+        String soundbox = classesApp.read("soundbox", "1");
         classesApp.save("detectClap", "1");
         stopService(new Intent(getBaseContext(), VocalService.class));
-        setvolume(Integer.parseInt(classesApp.read("seekBar", "50")));
+        setVolume(Integer.parseInt(classesApp.read("seekBar", "50")));
         getWindow().addFlags(128);
-        if (this.flashbox.equals("1") && this.deviceHasCameraFlash) {
+        if (flashbox.equals("1") && deviceHasCameraFlash) {
             this.isFlashOn = false;
             getCamera();
             startTimer(1000, true);
         }
-        if (this.vibratebox.equals("1")) {
-            runvibrate(true);
+        if (vibratebox.equals("1")) {
+            runVibrate(true);
         }
-        if (this.soundbox.equals("1")) {
-            runsong();
+        if (soundbox.equals("1")) {
+            runSong();
         }
-        setProgresseBarInvisible();
     }
 
-    private void setvolume(int i) {
+    private void setVolume(int i) {
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.setStreamVolume(3, (int) (((float) audioManager.getStreamMaxVolume(3)) * (((float) i) / 100.0f)), 0);
     }
 
-    private void runvibrate(boolean z) {
+    private void runVibrate(boolean z) {
         this.run = z;
         Context context = this.mCtx;
         this.v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -108,24 +99,25 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
                     }
                     try {
                         ActivityVocalSignal.this.v.vibrate(1000);
-                    } catch (Exception unused) {
+                    } catch (Exception ignored) {
                     }
                 }
             }
         }).start();
     }
 
-    private void runsong() {
+    private void runSong() {
         mySong = MediaPlayer.create(this, R.raw.alarm);
         mySong.setOnCompletionListener(this);
         mySong.start();
     }
 
+    @SuppressLint("SetTextI18n")
     private void initialize() {
-        txtsettingtext = findViewById(R.id.settingtext);
-        mstop = findViewById(R.id.stop);
-        mhome = findViewById(R.id.home);
-        mstop.setOnClickListener(view -> {
+        trendsetting = findViewById(R.id.settingtext);
+        stop = findViewById(R.id.stop);
+        home = findViewById(R.id.home);
+        stop.setOnClickListener(view -> {
             if (mTimer != null) {
                 mTimer.cancel();
             }
@@ -134,19 +126,17 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
                 ActivityVocalSignal.mySong.release();
             }
             run = false;
-            runvibrate(false);
-            mstop.setVisibility(View.INVISIBLE);
-            mhome.setVisibility(View.VISIBLE);
-            txtsettingtext.setText("ALARM STOPPED");
-            txtsettingtext.setTextColor(ActivityVocalSignal.this.getResources().getColor(R.color.green));
+            runVibrate(false);
+            stop.setVisibility(View.INVISIBLE);
+            home.setVisibility(View.VISIBLE);
+            trendsetting.setText("ALARM STOPPED");
+            trendsetting.setTextColor(ActivityVocalSignal.this.getResources().getColor(R.color.green));
         });
-        mhome.setOnClickListener(new OnClickListener() {
-            public void onClick(View view) {
-                Intent intent = new Intent(ActivityVocalSignal.this, MainActivity.class);
-                intent.setFlags(268435456);
-                ActivityVocalSignal.this.startActivity(intent);
-                ActivityVocalSignal.this.finish();
-            }
+        home.setOnClickListener(view -> {
+            Intent intent = new Intent(ActivityVocalSignal.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            ActivityVocalSignal.this.startActivity(intent);
+            ActivityVocalSignal.this.finish();
         });
     }
 
@@ -176,7 +166,7 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
         }
     }
 
-    public void surfaceCreated(SurfaceHolder surfaceHolder) {
+    public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
         this.mHolder = surfaceHolder;
         try {
             this.camera.setPreviewDisplay(this.mHolder);
@@ -185,7 +175,7 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
         }
     }
 
-    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+    public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
         try {
             this.camera.stopPreview();
         } catch (NullPointerException e) {
@@ -198,7 +188,7 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
     public void onDestroy() {
         try {
             MainActivity.activityMain.finish();
-        } catch (Exception unused) {
+        } catch (Exception ignored) {
         }
         super.onDestroy();
     }
@@ -255,7 +245,7 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
     }
 
     private void getCamera() {
-        this.preview = (SurfaceView) findViewById(R.id.PREVIEW);
+        this.preview = findViewById(R.id.PREVIEW);
         this.mHolder = this.preview.getHolder();
         this.mHolder.addCallback(this);
         this.mHolder.setType(3);
@@ -268,7 +258,7 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } catch (RuntimeException unused) {
+            } catch (RuntimeException ignored) {
             }
         }
     }
@@ -283,7 +273,7 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
                     this.params.setFlashMode("torch");
                     this.camera.setParameters(this.params);
                     this.camera.startPreview();
-                } catch (Exception unused) {
+                } catch (Exception ignored) {
                 }
             }
         }
@@ -299,7 +289,7 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
                     this.params.setFlashMode("off");
                     this.camera.setParameters(this.params);
                     this.camera.stopPreview();
-                } catch (Exception unused) {
+                } catch (Exception ignored) {
                 }
             }
         }
@@ -316,16 +306,10 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
             mediaPlayer.release();
         }
         this.run = false;
-        runvibrate(false);
+        runVibrate(false);
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
-    }
-
-    private void setProgresseBarInvisible() {
-        if (this.mProgresseBar.getVisibility() == View.VISIBLE) {
-            this.mProgresseBar.setVisibility(View.INVISIBLE);
-        }
     }
 }
