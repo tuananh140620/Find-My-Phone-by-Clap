@@ -45,7 +45,6 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/volume"
                 android:layout_centerHorizontal="true">
 
                 <ImageView
@@ -59,7 +58,6 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/volume"
                 android:layout_centerHorizontal="true">
 
                 <ImageView

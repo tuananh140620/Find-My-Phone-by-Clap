@@ -122,32 +122,32 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
     }
 
     private void initialize() {
-        this.txtsettingtext = (TextView) findViewById(R.id.settingtext);
-        this.mstop = (ImageView) findViewById(R.id.stop);
-        this.mhome = (ImageView) findViewById(R.id.home);
-        this.mstop.setOnClickListener(view -> {
-            if (ActivityVocalSignal.this.mTimer != null) {
-                ActivityVocalSignal.this.mTimer.cancel();
+        txtsettingtext = findViewById(R.id.settingtext);
+        mstop = findViewById(R.id.stop);
+        mhome = findViewById(R.id.home);
+        mstop.setOnClickListener(view -> {
+            if (mTimer != null) {
+                mTimer.cancel();
             }
-            ActivityVocalSignal.this.turnOffFlash();
+            turnOffFlash();
             if (ActivityVocalSignal.mySong != null) {
                 ActivityVocalSignal.mySong.release();
             }
-            ActivityVocalSignal.this.run = false;
-            ActivityVocalSignal.this.runvibrate(false);
-            ActivityVocalSignal.this.mstop.setVisibility(View.INVISIBLE);
-            ActivityVocalSignal.this.mhome.setVisibility(View.VISIBLE);
-            ActivityVocalSignal.this.txtsettingtext.setText("ALARM STOPPED");
-            ActivityVocalSignal.this.txtsettingtext.setTextColor(ActivityVocalSignal.this.getResources().getColor(R.color.green));
+            run = false;
+            runvibrate(false);
+            mstop.setVisibility(View.INVISIBLE);
+            mhome.setVisibility(View.VISIBLE);
+            txtsettingtext.setText("ALARM STOPPED");
+            txtsettingtext.setTextColor(ActivityVocalSignal.this.getResources().getColor(R.color.green));
         });
-//        this.mhome.setOnClickListener(new OnClickListener() {
-//            public void onClick(View view) {
-//                Intent intent = new Intent(ActivityVocalSignal.this, MainActivity.class);
-//                intent.setFlags(268435456);
-//                ActivityVocalSignal.this.startActivity(intent);
-//                ActivityVocalSignal.this.finish();
-//            }
-//        });
+        mhome.setOnClickListener(new OnClickListener() {
+            public void onClick(View view) {
+                Intent intent = new Intent(ActivityVocalSignal.this, MainActivity.class);
+                intent.setFlags(268435456);
+                ActivityVocalSignal.this.startActivity(intent);
+                ActivityVocalSignal.this.finish();
+            }
+        });
     }
 
     public void onCompletion(MediaPlayer mediaPlayer) {
