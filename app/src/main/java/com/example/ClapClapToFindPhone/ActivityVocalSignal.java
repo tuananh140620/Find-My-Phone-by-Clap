@@ -38,8 +38,9 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
     private TextView trendsetting;
     private Vibrator v;
 
-    public ActivityVocalSignal(boolean hasFlash) {
-        this.hasFlash = hasFlash;
+    public ActivityVocalSignal() {
+
+        hasFlash = false;
     }
 
     public void onPointerCaptureChanged(boolean z) {
@@ -66,7 +67,7 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
         setVolume(Integer.parseInt(classesApp.read("seekBar", "50")));
         getWindow().addFlags(128);
         if (flashbox.equals("1") && deviceHasCameraFlash) {
-            this.isFlashOn = false;
+            isFlashOn = false;
             getCamera();
             startTimer(1000, true);
         }
@@ -84,8 +85,8 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
     }
 
     private void runVibrate(boolean z) {
-        this.run = z;
-        this.v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        run = z;
+        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         new Thread(() -> {
             while (ActivityVocalSignal.this.run) {
                 try {
@@ -142,8 +143,8 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
     /* Access modifiers changed, original: 0000 */
     public void startTimer(long j, boolean z) {
         this.run = z;
-        if (this.run) {
-            this.mTimer = new CountDownTimer(j, 1000) {
+        if (run) {
+            mTimer = new CountDownTimer(j, 1000) {
                 public void onTick(long j) {
                 }
 
@@ -162,9 +163,9 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
     }
 
     public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
-        this.mHolder = surfaceHolder;
+        mHolder = surfaceHolder;
         try {
-            this.camera.setPreviewDisplay(this.mHolder);
+            camera.setPreviewDisplay(mHolder);
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         }
@@ -172,11 +173,11 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
 
     public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
         try {
-            this.camera.stopPreview();
+            camera.stopPreview();
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-        this.mHolder = null;
+        mHolder = null;
     }
 
 
@@ -202,7 +203,7 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
 
     public void onResume() {
         super.onResume();
-        if (this.hasFlash) {
+        if (hasFlash) {
             turnOnFlash();
         }
     }
@@ -224,16 +225,16 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
     }
 
     private void getCamera() {
-        this.preview = findViewById(R.id.PREVIEW);
-        this.mHolder = this.preview.getHolder();
-        this.mHolder.addCallback(this);
-        this.mHolder.setType(3);
+        preview = findViewById(R.id.PREVIEW);
+        mHolder = preview.getHolder();
+        mHolder.addCallback(this);
+        mHolder.setType(3);
         if (this.camera == null) {
             try {
-                this.camera = Camera.open();
-                this.params = this.camera.getParameters();
+                camera = Camera.open();
+                params = camera.getParameters();
                 try {
-                    this.camera.setPreviewDisplay(this.mHolder);
+                    camera.setPreviewDisplay(mHolder);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -243,15 +244,15 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
     }
 
     private void turnOnFlash() {
-        if (!this.isFlashOn) {
+        if (!isFlashOn) {
             Camera camera = this.camera;
-            if (camera != null && this.params != null) {
-                this.isFlashOn = true;
+            if (camera != null && params != null) {
+                isFlashOn = true;
                 try {
-                    this.params = camera.getParameters();
-                    this.params.setFlashMode("torch");
-                    this.camera.setParameters(this.params);
-                    this.camera.startPreview();
+                    params = camera.getParameters();
+                    params.setFlashMode("torch");
+                    camera.setParameters(params);
+                    camera.startPreview();
                 } catch (Exception ignored) {
                 }
             }
@@ -259,15 +260,15 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
     }
 
     private void turnOffFlash() {
-        if (this.isFlashOn) {
+        if (isFlashOn) {
             Camera camera = this.camera;
-            if (camera != null && this.params != null) {
+            if (camera != null && params != null) {
                 this.isFlashOn = false;
                 try {
-                    this.params = camera.getParameters();
-                    this.params.setFlashMode("off");
-                    this.camera.setParameters(this.params);
-                    this.camera.stopPreview();
+                    params = camera.getParameters();
+                    params.setFlashMode("off");
+                    camera.setParameters(params);
+                    camera.stopPreview();
                 } catch (Exception ignored) {
                 }
             }
@@ -284,7 +285,7 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
         if (mediaPlayer != null) {
             mediaPlayer.release();
         }
-        this.run = false;
+        run = false;
         runVibrate(false);
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
