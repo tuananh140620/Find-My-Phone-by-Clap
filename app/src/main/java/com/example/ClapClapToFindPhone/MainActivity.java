@@ -7,6 +7,7 @@ import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -36,6 +37,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private LinearLayout txtStart;
     private CheckBox checkBoxFlash;
     public static boolean MainIsRun;
+    public static MediaPlayer mySong;
+    private DetectClapClap clapDetector;
     @SuppressLint("StaticFieldLeak")
     public static Activity activityMain;
 
@@ -88,6 +91,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         initialization();
         settingSound();
         checkCamFlash();
+        ImageView imageViewOff = findViewById(R.id.off);
+        imageViewOff.setOnClickListener(v -> clapDetector.turnOffFlash());
     }
 
     private void initVolume() {

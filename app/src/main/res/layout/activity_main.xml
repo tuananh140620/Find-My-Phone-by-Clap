@@ -168,12 +168,12 @@
                 android:layout_below="@+id/BiLinear1"
                 android:layout_marginTop="@dimen/textSize">
 
-<!--                <ImageView-->
-<!--                    android:id="@+id/home"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="@dimen/textSize"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:src="@drawable/home" />-->
+                <ImageView
+                    android:id="@+id/off"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/textSize"
+                    android:layout_weight="1"
+                    android:src="@drawable/home" />
 
                 <ImageView
                     android:id="@+id/btn_start_service"

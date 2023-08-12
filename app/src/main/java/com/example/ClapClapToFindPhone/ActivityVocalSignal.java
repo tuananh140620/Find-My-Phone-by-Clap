@@ -37,6 +37,7 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
     private boolean run;
     private TextView trendsetting;
     private Vibrator v;
+    private boolean isSoundPlaying = false;
 
     public ActivityVocalSignal() {
 
@@ -118,9 +119,7 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
                 mTimer.cancel();
             }
             turnOffFlash();
-            if (ActivityVocalSignal.mySong != null) {
-                ActivityVocalSignal.mySong.release();
-            }
+            stopSound();
             run = false;
             runVibrate(false);
             stop.setVisibility(View.INVISIBLE);
@@ -221,6 +220,12 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
         if (camera != null) {
             camera.release();
             this.camera = null;
+        }
+    }
+    private void stopSound() {
+        if (mySong != null && isSoundPlaying) {
+            mySong.release();
+            isSoundPlaying = false;
         }
     }
 
