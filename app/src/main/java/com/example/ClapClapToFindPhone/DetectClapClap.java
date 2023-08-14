@@ -46,8 +46,9 @@ public class DetectClapClap implements OnsetHandler {
     private final String channelId = "i.apps.notifications";
     private final String description = "Test notification";
     private Vibrator v;
+    private IDetect callback;
     @SuppressLint("MissingPermission")
-    DetectClapClap(Context context) {
+    DetectClapClap(Context context, IDetect mCallback) {
         classesApp = new ClassesApp(context);
         SAMPLE_RATE = getValidSampleRates();
         mContext = context;
@@ -57,6 +58,7 @@ public class DetectClapClap implements OnsetHandler {
         mPercussionOnsetDetector = new PercussionOnsetDetector((float) SAMPLE_RATE, minBufferSize / 2, this, 24.0d, 5.0d);
         clap = 0;
         mIsRecording = true;
+        this.callback = mCallback;
     }
 
     public int getValidSampleRates() {
@@ -75,15 +77,9 @@ public class DetectClapClap implements OnsetHandler {
         if (clap >= nb_claps) {
             classesApp.save("detectClap", "1");
             mIsRecording = false;
-//            Intent intent = new Intent(mContext, ActivityVocalSignal.class);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            mContext.startActivity(intent);
-            runVibrate(true);
-//            runSong();
             showNotification();
-//            clearNotification();
-            turnOnFlash();
-                      mContext.stopService(new Intent(mContext, VocalService.class));
+
+            callback.onDetected();
         }
     }
     private void clearNotification() {
@@ -171,7 +167,7 @@ private void showNotification() {
     }
 
     private void runSong() {
-        mySong = MediaPlayer.create(mContext, R.raw.alarm);
+        mySong = MediaPlayer.create(mContext, R.raw.cat_meowing);
         mySong.setOnCompletionListener(mediaPlayer -> runSong());
         mySong.start();
     }

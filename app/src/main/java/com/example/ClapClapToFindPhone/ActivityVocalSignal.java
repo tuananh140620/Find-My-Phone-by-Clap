@@ -104,7 +104,7 @@ public class ActivityVocalSignal extends Activity implements OnCompletionListene
     }
 
     private void runSong() {
-        mySong = MediaPlayer.create(this, R.raw.alarm);
+        mySong = MediaPlayer.create(this, R.raw.cat_meowing);
         mySong.setOnCompletionListener(this);
         mySong.start();
     }

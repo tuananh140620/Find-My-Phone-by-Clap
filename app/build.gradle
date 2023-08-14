@@ -6,11 +6,11 @@ plugins {
 android {
     namespace 'com.example.ClapClapToFindPhone'
     compileSdkVersion 33
-    applicationVariants.all { variant ->
-        variant.javaCompileProvider.get().doLast {
-            runAllatori(variant)
-        }
-    }
+//    applicationVariants.all { variant ->
+//        variant.javaCompileProvider.get().doLast {
+//            runAllatori(variant)
+//        }
+//    }
     defaultConfig {
         applicationId "com.example.ClapClapToFindPhone"
         minSdkVersion 21
